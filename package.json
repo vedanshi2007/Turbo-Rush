@@ -25,9 +25,23 @@
   "build": {
     "appId": "com.turborush.game",
     "productName": "Turbo Rush",
-    "directories": { "output": "release" },
-    "files": ["dist/**/*", "desktop.cjs", "package.json"],
-    "win": { "target": ["nsis"], "icon": "icon.ico" },
-    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true }
-  }
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "desktop.cjs",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "main": "desktop.cjs"
 }
