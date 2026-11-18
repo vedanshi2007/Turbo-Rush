@@ -90,6 +90,7 @@ function setupCameras(){
 }
 function startRace(){
   if(renderer){renderer.dispose();renderer=null;}
+  if(renderer){renderer.dispose();renderer=null;}
   $("menu").style.display="none";$("endScreen").style.display="none";$("hud").style.display="block";
   $("countdown").textContent="3";$("pauseBtn")?.classList.remove("hidden");
   scene=new THREE.Scene();renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"high-performance"});renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;$("game").replaceChildren(renderer.domElement);
@@ -131,7 +132,7 @@ function driveHuman(r,dt){
 }
 function driveBot(r,dt){
   const target=21*r.aiSkill;
-  r.speed=THREE.MathUtils.damp(r.speed,target,.8,dt);
+  r.speed=THREE.MathUtils.damp(r.speed,target+(r.nitro>0?12:0),.8,dt);
   r.progress+=r.speed*dt;
   r.mesh.position.x=Math.cos(-r.progress/R)*(R+r.lane);
   r.mesh.position.z=Math.sin(-r.progress/R)*(R+r.lane);
@@ -155,7 +156,7 @@ function showResults(){
 }
 function updateRacers(dt){
   for(const r of players){if(!r.finished)driveHuman(r,dt);r.nitro=Math.max(0,r.nitro-dt);r.star=Math.max(0,r.star-dt);r.progress=Math.max(-3,r.progress);setRacerPosition(r);if(r.progress>=totalLaps*TAU*R)finishRacer(r);}
-  for(const r of bots){if(!r.finished)driveBot(r,dt);if(r.progress>=totalLaps*TAU*R)finishRacer(r);}
+  for(const r of bots){if(!r.finished)driveBot(r,dt);r.nitro=Math.max(0,r.nitro-dt);r.star=Math.max(0,r.star-dt);if(r.progress>=totalLaps*TAU*R)finishRacer(r);}
   checkPickups(dt);updateHUD();
 }
 function cameraFollow(camera,r,viewportWidth,viewportHeight){
@@ -175,6 +176,7 @@ function frame(){
   renderer.setScissorTest(false);
 }
 function pauseToggle(){if(!renderer)return;paused=!paused;$("pauseBtn").textContent=paused?"RESUME":"PAUSE";if(paused){$("countdown").textContent="PAUSED";}else $("countdown").textContent="";}
+$("enterGarage").addEventListener("click",()=>{$("welcome").style.display="none";$("menu").style.display="flex";});
 $("start").addEventListener("click",startRace);
 $("again").addEventListener("click",startRace);
 $("back").addEventListener("click",()=>{$("endScreen").style.display="none";$("menu").style.display="flex";$("hud").style.display="none";if(renderer){renderer.dispose();renderer=null;}$("game").replaceChildren();});
