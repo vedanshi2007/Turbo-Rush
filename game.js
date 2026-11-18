@@ -78,9 +78,9 @@ function createRacer(index,isHuman,playerNumber=1){
   setRacerPosition(racer);return racer;
 }
 function setRacerPosition(r){
-  const a=-(r.progress/ R),rad=R+r.lane;
+  const a=-(r.progress / R),rad=R+r.lane;
   r.mesh.position.set(Math.cos(a)*rad,.02,Math.sin(a)*rad);
-  r.mesh.rotation.y=-a;
+  r.mesh.rotation.y=r.progress / R;
   if(r.star>0){r.mesh.traverse(o=>{if(o.isMesh&&o.material&&o.material.emissive){o.material.emissive.set("#f7ca35");o.material.emissiveIntensity=.45;}});}
 }
 function setupCameras(){
@@ -103,8 +103,8 @@ function startRace(){
 }
 function updateHUD(){
   const sorted=[...players,...bots].sort((a,b)=>b.progress-a.progress);
-  players.forEach((p,i)=>{const rank=sorted.indexOf(p)+1;$("lap").textContent=Math.min(3,Math.floor(Math.max(0,p.progress)/TAU)+1)+" / 3";$("position").textContent=rank+" / 8";$("nitro").textContent=p.nitro>0?Math.ceil(p.nitro)+"s":"READY";$("star").textContent=p.star>0?Math.ceil(p.star)+"s":"READY";});
-  let second=$("p2hud");if(players.length>1){if(!second){second=document.createElement("div");second.id="p2hud";second.className="hudbox";$("topHud").append(second);}second.innerHTML='<div class="hudlabel">PLAYER 2 · LAP / PLACE</div><div class="hudvalue">'+(Math.min(3,Math.floor(Math.max(0,players[1].progress)/TAU)+1))+'/3 · '+(sorted.indexOf(players[1])+1)+'/8</div>';}else if(second)second.remove();
+  players.forEach((p,i)=>{const rank=sorted.indexOf(p)+1;$("lap").textContent=Math.min(3,Math.floor(Math.max(0,p.progress)/(TAU*R))+1)+" / 3";$("position").textContent=rank+" / 8";$("nitro").textContent=p.nitro>0?Math.ceil(p.nitro)+"s":"READY";$("star").textContent=p.star>0?Math.ceil(p.star)+"s":"READY";});
+  let second=$("p2hud");if(players.length>1){if(!second){second=document.createElement("div");second.id="p2hud";second.className="hudbox";$("topHud").append(second);}second.innerHTML='<div class="hudlabel">PLAYER 2 · LAP / PLACE</div><div class="hudvalue">'+(Math.min(3,Math.floor(Math.max(0,players[1].progress)/(TAU*R))+1))+'/3 · '+(sorted.indexOf(players[1])+1)+'/8</div>';}else if(second)second.remove();
 }
 function triggerPower(r,kind){
   if(kind==="nitro"){r.nitro=30;toast("⚡ NITRO BOOST · 30 SECONDS");}
@@ -112,7 +112,7 @@ function triggerPower(r,kind){
 }
 function controlsFor(r){
   if(r.playerNumber===2)return {forward:held.ArrowUp,back:held.ArrowDown,left:held.ArrowLeft,right:held.ArrowRight,nitro:held.Enter,star:held["/"]};
-  return {forward:held.KeyW||held.ArrowUp,back:held.KeyS||held.ArrowDown,left:held.KeyA||held.ArrowLeft,right:held.KeyD||held.ArrowRight,nitro:held.Space,star:held.ShiftLeft||held.ShiftRight};
+  return {forward:held.KeyW|| (mode==="single"&&held.ArrowUp),back:held.KeyS|| (mode==="single"&&held.ArrowDown),left:held.KeyA|| (mode==="single"&&held.ArrowLeft),right:held.KeyD|| (mode==="single"&&held.ArrowRight),nitro:held.Space,star:held.ShiftLeft||held.ShiftRight};
 }
 function driveHuman(r,dt){
   const c=controlsFor(r),accel=c.forward?1:c.back?-.72:0;
@@ -120,7 +120,7 @@ function driveHuman(r,dt){
   if(!accel)r.speed*=Math.pow(.986,dt*60);
   const turn=(c.right?1:0)-(c.left?1:0);
   r.steer=THREE.MathUtils.damp(r.steer,turn,.16,dt);
-  r.progress+=r.speed/R*dt*(r.speed<0?-1:1);
+  r.progress+=r.speed*dt;
   r.mesh.rotation.y= r.progress/R + r.steer*.18;
   r.mesh.position.x=Math.cos(-r.progress/R)*(R+r.lane);
   r.mesh.position.z=Math.sin(-r.progress/R)*(R+r.lane);
@@ -130,7 +130,7 @@ function driveHuman(r,dt){
 function driveBot(r,dt){
   const target=21*r.aiSkill;
   r.speed=THREE.MathUtils.damp(r.speed,target,.8,dt);
-  r.progress+=r.speed/R*dt;
+  r.progress+=r.speed*dt;
   r.mesh.position.x=Math.cos(-r.progress/R)*(R+r.lane);
   r.mesh.position.z=Math.sin(-r.progress/R)*(R+r.lane);
   r.mesh.rotation.y=r.progress/R;
@@ -152,7 +152,7 @@ function showResults(){
   $("resultText").textContent=players.length===2?"Player 1: "+players[0].place+" · Player 2: "+players[1].place:"You finished "+(best===1?"1st place!":"in "+best+" place.");
 }
 function updateRacers(dt){
-  for(const r of players){if(!r.finished)driveHuman(r,dt);r.nitro=Math.max(0,r.nitro-dt);r.star=Math.max(0,r.star-dt);r.progress=Math.max(-3,r.progress);setRacerPosition(r);if(r.progress>=totalLaps*TAU)finishRacer(r);}
+  for(const r of players){if(!r.finished)driveHuman(r,dt);r.nitro=Math.max(0,r.nitro-dt);r.star=Math.max(0,r.star-dt);r.progress=Math.max(-3,r.progress);setRacerPosition(r);if(r.progress>=totalLaps*TAU*R)finishRacer(r);}
   for(const r of bots){if(!r.finished)driveBot(r,dt);if(r.progress>=totalLaps*TAU)finishRacer(r);}
   checkPickups(dt);updateHUD();
 }
