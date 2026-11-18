@@ -34,7 +34,7 @@ function renderChoices(){
 renderChoices();
 $("cars").addEventListener("click",e=>{const b=e.target.closest("[data-car]");if(b){chosenCar=Number(b.dataset.car);renderChoices();}});
 $("themes").addEventListener("click",e=>{const b=e.target.closest("[data-world]");if(b){chosenWorld=Number(b.dataset.world);renderChoices();}});
-document.querySelectorAll(".mode").forEach(b=>b.addEventListener("click",()=>{mode=b.dataset.mode;document.querySelectorAll(".mode").forEach(x=>x.classList.toggle("active",x===b));}));
+document.querySelectorAll(".mode").forEach(b=>b.addEventListener("click",()=>{mode=b.dataset.mode;document.body.classList.toggle("two-player",mode==="double");document.querySelectorAll(".mode").forEach(x=>x.classList.toggle("active",x===b));}));
 function toast(message){toastMessage=message;toastTimer=2.2;$("toast").textContent=message;}
 function makeKart(color,scale=1){
   const g=new THREE.Group();
@@ -81,7 +81,7 @@ function setRacerPosition(r){
   const a=-(r.progress / R),rad=R+r.lane;
   r.mesh.position.set(Math.cos(a)*rad,.02,Math.sin(a)*rad);
   r.mesh.rotation.y=r.progress / R;
-  if(r.star>0){r.mesh.traverse(o=>{if(o.isMesh&&o.material&&o.material.emissive){o.material.emissive.set("#f7ca35");o.material.emissiveIntensity=.45;}});}
+  r.mesh.traverse(o=>{if(o.isMesh&&o.material&&o.material.emissive){o.material.emissive.set(r.star>0?"#f7ca35":"#000000");o.material.emissiveIntensity=r.star>0?.45:0;}});
 }
 function setupCameras(){
   cameras=[];
