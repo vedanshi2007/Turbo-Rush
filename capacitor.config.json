@@ -1,0 +1,6 @@
+{
+  "appId": "com.turborush.game",
+  "appName": "Turbo Rush",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}
