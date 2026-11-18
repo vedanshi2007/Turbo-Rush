@@ -1,0 +1,16 @@
+{
+  "id": "/",
+  "name": "Turbo Rush - Kart Racing",
+  "short_name": "Turbo Rush",
+  "description": "Choose your kart, pick your world and race to victory.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#080d19",
+  "theme_color": "#080d19",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
