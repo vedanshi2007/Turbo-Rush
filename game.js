@@ -90,7 +90,6 @@ function setupCameras(){
 }
 function startRace(){
   if(renderer){renderer.dispose();renderer=null;}
-  if(renderer){renderer.dispose();renderer=null;}
   $("menu").style.display="none";$("endScreen").style.display="none";$("hud").style.display="block";
   $("countdown").textContent="3";$("pauseBtn")?.classList.remove("hidden");
   scene=new THREE.Scene();renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"high-performance"});renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;$("game").replaceChildren(renderer.domElement);
