@@ -89,6 +89,7 @@ function setupCameras(){
   for(let i=0;i<count;i++){const camera=new THREE.PerspectiveCamera(64,1,.1,500);camera.position.set(0,15,22);cameras.push(camera);}
 }
 function startRace(){
+  if(renderer){renderer.dispose();renderer=null;}
   $("menu").style.display="none";$("endScreen").style.display="none";$("hud").style.display="block";
   $("countdown").textContent="3";$("pauseBtn")?.classList.remove("hidden");
   scene=new THREE.Scene();renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"high-performance"});renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;$("game").replaceChildren(renderer.domElement);
@@ -119,6 +120,7 @@ function driveHuman(r,dt){
   r.speed=THREE.MathUtils.clamp(r.speed+accel*(accel<0?14:19)*dt,-8,26+(r.nitro>0?13:0));
   if(!accel)r.speed*=Math.pow(.986,dt*60);
   const turn=(c.right?1:0)-(c.left?1:0);
+  r.lane=THREE.MathUtils.clamp(r.lane+turn*Math.max(7,Math.abs(r.speed))*.24*dt,-5.3,5.3);
   r.steer=THREE.MathUtils.damp(r.steer,turn,.16,dt);
   r.progress+=r.speed*dt;
   r.mesh.rotation.y= r.progress/R + r.steer*.18;
