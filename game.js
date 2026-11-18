@@ -177,7 +177,7 @@ $("start").addEventListener("click",startRace);
 $("again").addEventListener("click",startRace);
 $("back").addEventListener("click",()=>{$("endScreen").style.display="none";$("menu").style.display="flex";$("hud").style.display="none";if(renderer){renderer.dispose();renderer=null;}$("game").replaceChildren();});
 $("pauseBtn")?.addEventListener("click",pauseToggle);
-window.addEventListener("keydown",e=>{if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].includes(e.key))e.preventDefault();if(e.key==="Escape"||e.key==="KeyP"){pauseToggle();return;}held[e.code]=true;held[e.key]=true;});
+window.addEventListener("keydown",e=>{if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].includes(e.key))e.preventDefault();if(e.key==="Escape"||e.code==="KeyP"){pauseToggle();return;}held[e.code]=true;held[e.key]=true;});
 window.addEventListener("keyup",e=>{held[e.code]=false;held[e.key]=false;});
 document.querySelectorAll(".control").forEach(btn=>{
   const key=btn.dataset.key;if(!key)return;
