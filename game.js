@@ -112,7 +112,7 @@ function triggerPower(r,kind){
 }
 function controlsFor(r){
   if(r.playerNumber===2)return {forward:held.ArrowUp,back:held.ArrowDown,left:held.ArrowLeft,right:held.ArrowRight,nitro:held.Enter,star:held["/"]};
-  return {forward:held.KeyW|| (mode==="single"&&held.ArrowUp),back:held.KeyS|| (mode==="single"&&held.ArrowDown),left:held.KeyA|| (mode==="single"&&held.ArrowLeft),right:held.KeyD|| (mode==="single"&&held.ArrowRight),nitro:held.Space,star:held.ShiftLeft||held.ShiftRight};
+  return {forward:held.KeyW|| (mode==="single"&&held.ArrowUp),back:held.KeyS|| (mode==="single"&&held.ArrowDown),left:held.KeyA|| (mode==="single"&&held.ArrowLeft),right:held.KeyD|| (mode==="single"&&held.ArrowRight),nitro:held.Space||held[" "],star:held.ShiftLeft||held.ShiftRight||held.Shift};
 }
 function driveHuman(r,dt){
   const c=controlsFor(r),accel=c.forward?1:c.back?-.72:0;
@@ -153,7 +153,7 @@ function showResults(){
 }
 function updateRacers(dt){
   for(const r of players){if(!r.finished)driveHuman(r,dt);r.nitro=Math.max(0,r.nitro-dt);r.star=Math.max(0,r.star-dt);r.progress=Math.max(-3,r.progress);setRacerPosition(r);if(r.progress>=totalLaps*TAU*R)finishRacer(r);}
-  for(const r of bots){if(!r.finished)driveBot(r,dt);if(r.progress>=totalLaps*TAU)finishRacer(r);}
+  for(const r of bots){if(!r.finished)driveBot(r,dt);if(r.progress>=totalLaps*TAU*R)finishRacer(r);}
   checkPickups(dt);updateHUD();
 }
 function cameraFollow(camera,r,viewportWidth,viewportHeight){
